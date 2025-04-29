@@ -1,33 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useRef, useState } from 'react'
+import { useTodos } from './hooks/useTodos'
+import { focusInputToEnd } from './utils/focusInput'
+import TodoInput from './components/TodoInput'
+import TodoList from './components/TodoList'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { todos, addTodo, deleteTodo, setTodos } = useTodos()
+  const [todoValue, setTodoValue] = useState('')
+  const inputRef = useRef(null)
+
+  function handleEditTodo(index) {
+    const text = todos[index]
+    setTodoValue(text)
+    deleteTodo(index)
+    setTimeout(() => focusInputToEnd(inputRef, text), 0)
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Create Your own Todo List</h1>
+      <TodoInput
+        inputRef={inputRef}
+        todoValue={todoValue}
+        setTodoValue={setTodoValue}
+        handleAddTodo={addTodo}
+      />
+      <TodoList
+        todos={todos}
+        handleEditTodo={handleEditTodo}
+        handleDeleteTodo={deleteTodo}
+      />
     </>
   )
 }
