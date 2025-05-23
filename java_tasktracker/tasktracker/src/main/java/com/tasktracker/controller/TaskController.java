@@ -5,12 +5,11 @@ import com.tasktracker.dto.TaskResponse;
 import com.tasktracker.model.TaskStatus;
 import com.tasktracker.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
@@ -27,7 +26,7 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
-    @GetMapping("%status/{status}")
+    @GetMapping("/status/{status}")
     public List<TaskResponse> getTasksByStatus(@PathVariable TaskStatus status) {
         return taskService.getTasksByStatus(status);
     }
