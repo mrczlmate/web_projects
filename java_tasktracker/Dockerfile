@@ -1,40 +1,23 @@
-# ----------- FRONTEND STAGE -------------
+# ----------- FRONTEND IMAGE -------------
 FROM node:20-alpine AS frontend
 
 WORKDIR /app
-COPY frontend/ ./frontend/
-WORKDIR /app/frontend
+COPY frontend/ ./
+RUN npm install && npm run build
+RUN npm install -g serve
 
-RUN npm install
-RUN npm run build
-
-
-# ----------- BACKEND STAGE -------------
+# ----------- BACKEND BUILD IMAGE -------------
 FROM maven:3.9.5-eclipse-temurin-17-alpine AS backend
 
 WORKDIR /app
 COPY tasktracker/ ./tasktracker/
 WORKDIR /app/tasktracker
-
 RUN mvn clean package -DskipTests
 
-
-# ----------- FINAL RUNTIME IMAGE -------------
-FROM eclipse-temurin:17-jdk-alpine
-
-# Set environment variables
-ENV SPRING_PROFILES_ACTIVE=prod \
-    JAVA_OPTS=""
+# ----------- BACKEND RUNTIME IMAGE -------------
+FROM eclipse-temurin:17-jdk-alpine AS backend-runtime
 
 WORKDIR /app
-
-# Copy backend jar
-COPY --from=backend /app/tasktracker/target/*.jar app.jar
-
-# Copy built frontend to static resources (optional, if serving via Spring)
-COPY --from=frontend /app/frontend/dist/ /app/static/
-
-# Expose the port Spring Boot runs on
+COPY --from=backend /app/tasktracker/target/tasktracker-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-CMD java $JAVA_OPTS -jar app.jar
+CMD ["java", "-jar", "app.jar"]

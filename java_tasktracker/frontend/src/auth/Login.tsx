@@ -1,9 +1,11 @@
 import { useState } from "react"
 import axios from "../api/axios"
+import { useNavigate } from "react-router-dom"
 
 export default function Login() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const navigate = useNavigate()
 
     const handleLogin = async () => {
         try {
@@ -11,10 +13,16 @@ export default function Login() {
                 username,
                 password,
             })
-            localStorage.setItem("token", response.data.token)
-            alert("Login successful")
+            const token = response.data.token
+            if (token) {
+                localStorage.setItem("token", token)
+                navigate("/")
+        } else {
+            alert("Bejelentkezés sikertelen: nincs token!")
+        }
         } catch (err) {
-            alert("Login failed")
+            console.error(err)
+            alert("Bejelentkezés sikertelen!")
         }
     }
 
