@@ -18,20 +18,22 @@ export default function Login() {
                 localStorage.setItem("token", token)
                 navigate("/")
         } else {
-            alert("Bejelentkezés sikertelen: nincs token!")
+            alert("Successful login: Authentication Token generated!")
         }
         } catch (err) {
             console.error(err)
-            alert("Bejelentkezés sikertelen!")
+            alert("Unsuccessful login!")
         }
     }
 
     return (
         <div>
-            <h2>Bejelentkezés</h2>
-            <input placeholder="Felhasználónév" onChange={e => setUsername(e.target.value)} />
-            <input placeholder="Jelszó" type="password" onChange={e => setPassword(e.target.value)} />
-            <button onClick={handleLogin}>Belépés</button>
+            <h2>Login to Task Tracker</h2>
+            <input placeholder="username" onChange={e => setUsername(e.target.value)} />
+            <input placeholder="password" type="password" onChange={e => setPassword(e.target.value)} />
+            <button onClick={handleLogin}>Login</button>
+
+            <p>Don't have an account? <button onClick={() => navigate("/register")}>Register here</button></p>
         </div>
     )
 }

@@ -20,7 +20,7 @@ export default function TaskList() {
 
     return (
         <div>
-            <h2>Feladataim</h2>
+            <h2>Tasks</h2>
             <ul>
                 {Array.isArray(tasks) && tasks.map(t => (
                     <li key={t.id}>{t.title} ({t.status})</li>
