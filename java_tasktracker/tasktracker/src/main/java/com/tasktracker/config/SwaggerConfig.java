@@ -19,7 +19,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Task Tracker API")
                         .version("1.0")
-                        .description("Feladatkezelő alkalmazás dokumentáció"))
+                        .description("Task Tracker application API"))
                 .components(new Components()
                         .addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()

@@ -4,7 +4,6 @@ import com.tasktracker.dto.TaskRequest;
 import com.tasktracker.dto.TaskResponse;
 import com.tasktracker.model.TaskStatus;
 import com.tasktracker.service.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @PostMapping
     public TaskResponse createTask(@RequestBody TaskRequest request) {
