@@ -1,6 +1,11 @@
 import { useState } from "react"
 import axios from "../api/axios"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
+import Layout from "../components/Layout"
+import FormInput from "../components/FormInput"
+import FormButton from "../components/FormButton"
+import AuthSwitchText from "../components/AuthSwitchText"
 
 export default function Login() {
     const [username, setUsername] = useState("")
@@ -17,23 +22,31 @@ export default function Login() {
             if (token) {
                 localStorage.setItem("token", token)
                 navigate("/")
-        } else {
-            alert("Successful login: Authentication Token generated!")
-        }
-        } catch (err) {
+                toast.success("Logged in!")
+            } else {
+                toast.error('Login unsuccessful! Authentication Token not generated!')
+            }
+        } catch (err : any) {
             console.error(err)
-            alert("Unsuccessful login!")
+            if (err.response?.status === 403) {
+                toast.error("Invalid username or password.")
+            } else if (err.response?.status === 500) {
+                toast.error("Server error. Please try again later.")
+            } else if (err.response?.data?.message) {
+                toast.error(err.response.data.message)
+            } else {
+                toast.error("Login failed.")
+            }
         }
     }
 
     return (
-        <div>
-            <h2>Login to Task Tracker</h2>
-            <input placeholder="username" onChange={e => setUsername(e.target.value)} />
-            <input placeholder="password" type="password" onChange={e => setPassword(e.target.value)} />
-            <button onClick={handleLogin}>Login</button>
-
-            <p>Don't have an account? <button onClick={() => navigate("/register")}>Register here</button></p>
-        </div>
+        <Layout>
+        <h2 className="text-3xl font-bold text-center text-white">Sign In</h2>
+        <FormInput type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+        <FormInput type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+        <FormButton onClick={handleLogin}>Log In</FormButton>
+        <AuthSwitchText text="Don’t have an account?" linkText="Sign up" onClick={() => navigate("/register")}/>
+        </Layout>
     )
 }
